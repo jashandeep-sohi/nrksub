@@ -46,7 +46,7 @@ arg_parser.add_argument(
   "-f", "--format",
   help = "Output format. Currently, only 'ttml' is supported. "
          "Default is 'ttml'.",
-  choices = ["ttml",],
+  choices = ["ttml", "srt"],
   default = "ttml"
 )
 
@@ -69,13 +69,37 @@ def str2td(s):
 
 def td2str(td):
   """
-  Convert a :obj:`datetime.timedelta` object to a ``HH:MM:SS,millisec``
-  formated :obj:`str` (note the comma).
+  Convert a :obj:`datetime.timedelta` object to a ``HH:MM:SS.millisec``
+  formated :obj:`str`.
   """
   h, h_r = divmod(td.total_seconds(), 3600)
   m, s = divmod(h_r, 60)
-  return "{h:02.0f}:{m:02.0f}:{s:06.3f}".format(h=h, m=m, s=s).replace(".", ",")
+  return "{h:02.0f}:{m:02.0f}:{s:06.3f}".format(h=h, m=m, s=s)
 
+def ttml2srt(ttml):
+  """
+  Convert a TTML :obj:`bs4.BeautifulSoup` object into SRT format.
+  """
+  f = lambda td: td2str(td).replace(".", ",")
+  
+  for i, p in enumerate(ttml.tt.body.div("p"), 1):
+    begin = str2td(p["begin"])
+    dur = str2td(p["dur"])
+    end = begin + dur
+    
+    yield "{}\n{} --> {}\n".format(i, f(begin), f(end))
+    
+    for c in p.children:
+      if c.name == "br":
+        yield "\n"
+      elif c.name == "span" and c["style"] == "italic":
+        yield "<i>{}</i>".format(c.string.strip())
+      elif c.string and c.string != "\n":
+        yield c.string.strip()
+      
+      if c.next_sibling == None:
+        yield "\n\n"
+      
 if __name__ == "__main__":
 
   args = arg_parser.parse_args()
@@ -86,7 +110,7 @@ if __name__ == "__main__":
     "Accept-Encoding": "gzip, deflate",
     "Accept-Language": "en-US,en;q=0.5",
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-    "Referer":	"https://translate.google.com/",
+    "Referer": "https://translate.google.com/",
   }
   
   ttml_resp = requests.get(
@@ -112,14 +136,18 @@ if __name__ == "__main__":
       },
       headers = req_headers
     )
-    translated = trans_resp.text.lstrip("<pre>").rstrip("</pre>").split("\r\r")
+    trans_soup = bs4.BeautifulSoup(trans_resp.text, "html.parser")
     
-    for i, trans in enumerate(translated):
+    for i, trans in enumerate(trans_soup.pre.string.split("\r\r")):
       nav_strings[i].replace_with(trans)
-      
+    
     ttml.tt["lang"] = args.lang
   
-  ttml.tt.insert(0, ttml.new_string("Created using nrksub", bs4.Comment))  
-  args.output.write(ttml.prettify() + "\n")
+  if args.format == "srt":
+    for line in ttml2srt(ttml):
+      args.output.write(str(line))
+  else:
+    ttml.tt.insert(0, ttml.new_string("Created using nrksub", bs4.Comment))  
+    args.output.write(ttml.prettify() + "\n")
   
 # vim: tabstop=2 expandtab
