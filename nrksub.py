@@ -104,25 +104,24 @@ if __name__ == "__main__":
 
   args = arg_parser.parse_args()
   
-  req_headers = {
+  req_session = requests.Session()
+  req_session.headers.update({
     "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:37.0) Gecko/20100101 "
                   "Firefox/37.0",
     "Accept-Encoding": "gzip, deflate",
     "Accept-Language": "en-US,en;q=0.5",
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-    "Referer": "https://translate.google.com/",
-  }
-  
-  ttml_resp = requests.get(
-    "http://tv.nrk.no/programsubtitles/{}".format(args.id),
-    headers = req_headers
+  })
+ 
+  ttml_resp = req_session.get(
+    "http://tv.nrk.no/programsubtitles/{}".format(args.id)
   )
   
   ttml = bs4.BeautifulSoup(ttml_resp.text, "html.parser")
     
   if args.lang != "no":
     nav_strings = ttml.tt.body.div.find_all(text=True)
-    trans_resp = requests.post(
+    trans_resp = req_session.post(
       "https://translate.googleusercontent.com/translate_f",
       files = {"file": ("trans.txt", "\r\r".join(nav_strings), "text/plain")},
       data = {
@@ -134,7 +133,7 @@ if __name__ == "__main__":
         "ie": "UTF-8",
         "edit-text": "",
       },
-      headers = req_headers
+      headers = {"Referer": "https://translate.google.com/"}
     )
     trans_soup = bs4.BeautifulSoup(trans_resp.text, "html.parser")
     
