@@ -47,7 +47,7 @@ arg_parser.add_argument(
   help = "Output format. Currently, only 'ttml' is supported. "
          "Default is 'ttml'.",
   choices = ["ttml",],
-  default = "srt"
+  default = "ttml"
 )
 
 arg_parser.add_argument(
