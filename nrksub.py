@@ -25,6 +25,8 @@ from argparse import ArgumentParser, FileType
 Download, convert subtitles for NRK TV (tv.nrk.no) programmes.
 """
 
+__version__ = "0.1.0"
+
 arg_parser = ArgumentParser(
   description = __doc__
 )
