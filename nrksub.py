@@ -136,7 +136,11 @@ if __name__ == "__main__":
     )
     trans_soup = bs4.BeautifulSoup(trans_resp.text, "html.parser")
     
-    for i, trans in enumerate(trans_soup.pre.string.split("\r\r")):
+    trans_strings = trans_soup.pre.string.split("\r\r")
+    
+    assert len(nav_strings) == len(trans_strings)
+    
+    for i, trans in enumerate(trans_strings):
       nav_strings[i].replace_with(trans)
     
     ttml.tt["lang"] = args.lang
