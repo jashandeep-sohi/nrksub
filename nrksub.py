@@ -58,6 +58,13 @@ arg_parser.add_argument(
   default = "en"
 )
 
+arg_parser.add_argument(
+  "-u", "--user-agent",
+  help = "User Agent for HTTP Requests. Default is '%(default)s'.",
+  default = "Mozilla/5.0 (X11; Linux x86_64; rv:37.0) Gecko/20100101 "
+            "Firefox/37.0"
+)
+
 def str2td(s):
   """
   Convert a ``HH:MM:SS.millisec`` formated :obj:`str` to a
@@ -105,8 +112,7 @@ if __name__ == "__main__":
   
   req_session = requests.Session()
   req_session.headers.update({
-    "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:37.0) Gecko/20100101 "
-                  "Firefox/37.0",
+    "User-Agent": args.user_agent,
     "Accept-Encoding": "gzip, deflate",
     "Accept-Language": "en-US,en;q=0.5",
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
