@@ -51,10 +51,11 @@ arg_parser.add_argument(
 
 arg_parser.add_argument(
   "-l", "--lang",
-  help = "Two letter language code for the language into which the original "
-         "Norwegian subtitles should be translated using Google Translate. "
-         "Default is 'en' for English. To skip the translation "
-         "provide 'no' for Norwegian.",
+  help = """
+  Two letter language code for the language into which the original Norwegian
+  subtitles should be translated using Google Translate. Default is 'en' for
+  English. To skip the translation provide 'no' for Norwegian.
+  """,
   default = "en"
 )
 
