@@ -16,14 +16,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+"""
+Download, convert subtitles for NRK TV (tv.nrk.no) programmes.
+"""
+
 import requests
 import bs4
 import datetime
 from argparse import ArgumentParser, FileType
 
-"""
-Download, convert subtitles for NRK TV (tv.nrk.no) programmes.
-"""
 
 __version__ = "0.2.0"
 
