@@ -27,7 +27,7 @@ import datetime
 from argparse import ArgumentParser, FileType
 
 
-__version__ = "0.2.1"
+__version__ = "0.4.0"
 
 arg_parser = ArgumentParser(
   description = __doc__
