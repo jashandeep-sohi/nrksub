@@ -1,6 +1,6 @@
 nrksub
 ======
-Download, convert subtitles for NRK TV (tv.nrk.no) programmes.
+Download, convert subtitles for NRK TV (tv.nrk.no) programs.
 
 Dependencies
 ------------
@@ -10,7 +10,7 @@ Dependencies
 
 Usage
 -----
-To download subtitles for a programme, provide it's URL as the first argument::
+To download subtitles for a programs, provide it's URL as the first argument::
 
  $ url='https://tv.nrk.no/serie/side-om-side/MUHH48000415/sesong-3/episode-4'
  $ ./nrksub.py $url

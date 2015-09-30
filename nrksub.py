@@ -17,7 +17,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-Download, convert subtitles for NRK TV (tv.nrk.no) programmes.
+Download, convert subtitles for NRK TV (tv.nrk.no) programs.
 """
 
 import requests
