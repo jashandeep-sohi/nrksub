@@ -1,6 +1,6 @@
 nrksub
 ======
-Download, convert subtitles for NRK TV (tv.nrk.no) programs.
+Download, translate subtitles for NRK TV programs.
 
 Dependencies
 ------------
