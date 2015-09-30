@@ -21,6 +21,7 @@ Download, convert subtitles for NRK TV (tv.nrk.no) programmes.
 """
 
 import requests
+import re
 import bs4
 import datetime
 from argparse import ArgumentParser, FileType
@@ -33,8 +34,8 @@ arg_parser = ArgumentParser(
 )
 
 arg_parser.add_argument(
-  "id",
-  help = "Program ID (e.g. MUHH02001815)"
+  "url",
+  help = "Program URL"
 )
 
 arg_parser.add_argument(
@@ -121,9 +122,25 @@ if __name__ == "__main__":
     "Accept-Language": "en-US,en;q=0.5",
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
   })
+  
+  program_resp = req_session.get(args.url)
+  
+  sub_id_match = re.search(
+    """
+    .*?data-subtitlesurl\s+=\s+['"]
+    .*?programsubtitles/([a-zA-Z0-9]+)
+    ["']
+    """,
+    program_resp.text,
+    re.DOTALL|re.VERBOSE
+  )
+  if not sub_id_match:
+    args.error("could not find subtitle id")
+  
+  sub_id = sub_id_match.group(1)
  
   ttml_resp = req_session.get(
-    "http://tv.nrk.no/programsubtitles/{}".format(args.id)
+    "http://tv.nrk.no/programsubtitles/{}".format(sub_id)
   )
   
   ttml = bs4.BeautifulSoup(ttml_resp.text, "html.parser")
