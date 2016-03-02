@@ -93,9 +93,16 @@ def ttml2srt(ttml):
   """
   f = lambda td: td2str(td).replace(".", ",")
   
-  for i, p in enumerate(ttml.tt.body.div("p"), 1):
-    begin = str2td(p["begin"])
-    dur = str2td(p["dur"])
+  i = 0
+  for p in ttml.tt.body.div("p"):
+    try:
+      begin = str2td(p["begin"])
+      dur = str2td(p["dur"])
+    except ValueError:
+      continue
+    else:
+      i += 1
+    
     end = begin + dur
     
     yield "{}\n{} --> {}\n".format(i, f(begin), f(end))
